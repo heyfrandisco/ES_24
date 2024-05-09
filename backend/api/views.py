@@ -1,7 +1,6 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from base.models import *
 from .serializers import *
 
 
@@ -22,6 +21,7 @@ def addUser(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response()
 
+
 @api_view(['POST'])
 def addDoctor(request):
     serializer = DoctorSerializer(data=request.data)
@@ -30,6 +30,7 @@ def addDoctor(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response()
+
 
 @api_view(['POST'])
 def addAppointment(request):

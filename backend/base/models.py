@@ -17,5 +17,10 @@ class User(models.Model):
     email = models.CharField(max_length=200)
     appointments = models.ManyToManyField(Appointment)
 
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.IntegerField()
+    date = models.DateField()
+
 
 
