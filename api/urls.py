@@ -1,9 +1,13 @@
-from django.urls import path
-from. import views
+from django.urls import path, re_path
+#from . import views
+from api.views import *
 
 urlpatterns = [
-    path('getusers/', views.getUsers),
-    path('adduser/', views.addUser),
-    path('adddoctor/', views.addDoctor),
-    path('addappointment/', views.addAppointment),
+    path('register', register),
+    path('login', login),
+    path('test_token', test_token),
+    path('token', CustomTokenObtainPairView.as_view()),
+    
+    path('specialties/', getSpecialties),
+    path('doctors/<str:specialty>', getDoctorsBySpecialty),
 ]
