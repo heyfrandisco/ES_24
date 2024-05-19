@@ -16,6 +16,8 @@ from rest_framework.permissions import IsAuthenticated
 from base.models import *
 from .serializers import *
 
+import boto3, os, base64
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenSerializer
@@ -74,3 +76,22 @@ def getDoctorsBySpecialty(request, specialty):
     serializer = DoctorSerializer(doctors, many=True)
 
     return Response({"Doctors for specialty":serializer.data})
+
+
+@api_view(['POST'])
+def faceRecognition(request):
+    rekognition = boto3.client(
+        'rekognition',
+        aws_access_key_id='',
+        aws_secret_access_key='',
+        aws_session_token='',
+        region_name='us-east-1'
+    )
+
+    s3 = boto3.resource(
+        's3',
+        aws_access_key_id='',
+        aws_secret_access_key='',
+        aws_session_token='',
+        region_name='us-east-1'
+    )

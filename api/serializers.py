@@ -26,10 +26,10 @@ class UserSerializer(serializers.ModelSerializer):
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
-        fields = '__all__'
+        fields = ['id', 'name', 'speciality']
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = '__all__'
+        fields = ['id', 'user', 'doctor', 'date', 'hour', 'speciality', 'paid', 'room', 'est_time']
