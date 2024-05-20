@@ -1,3 +1,7 @@
 __pycache__/
 db.sqlite3
 backend/
+base/__pycache__
+base/migrations
+physiot/__pycache__
+api/__pycache__
