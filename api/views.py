@@ -50,7 +50,35 @@ def register(request):
         user.set_password(request.data['password'])
         user.save()
 
-        return Response({"user created"},status=status.HTTP_201_CREATED)
+        return Response({"User Created"},status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def createAppointment(request):
+    date = request.data.get('date')
+    hour = request.data.get('hour')
+    speciality = request.data.get('speciality')
+    doctor = request.data.get('doctor')
+
+    if not (date and hour and speciality and doctor):
+        return Response({"detail": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    if len(hour.split(':')) == 2:
+        hour = f"{hour}:00"
+
+    appointment_data = {
+        'date': date,
+        'hour': hour,
+        'speciality': speciality,
+        'doctor': doctor
+    }
+
+    serializer = AppointmentSerializer(data=appointment_data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -73,7 +101,7 @@ def getDoctorsBySpecialty(request, specialty):
     doctors = Doctor.objects.filter(speciality=specialty)
     serializer = DoctorSerializer(doctors, many=True)
 
-    return Response({"Doctors for specialty":serializer.data})
+    return Response({"doctors":serializer.data})
 
 
 @api_view(['POST'])
