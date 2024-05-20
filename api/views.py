@@ -50,9 +50,7 @@ def register(request):
         user.set_password(request.data['password'])
         user.save()
 
-        token = CustomTokenSerializer(data=request.data)
-        if token.is_valid():
-            return Response(token.validated_data, status=status.HTTP_201_CREATED)
+        return Response({"user created"},status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
