@@ -1,5 +1,0 @@
-__pycache__/
-db.sqlite3
-backend/base/__pycache__
-backend/physiot/__pycache__
-backend/api/__pycache__
