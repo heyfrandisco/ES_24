@@ -1,0 +1,42 @@
+.navbar{
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    background-color: aquamarine;
+    opacity: 0.85;
+    position: fixed;
+    justify-content: space-around;
+    align-items: center;
+    height: 10vh;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    overflow-x: hidden;
+}
+
+
+
+.logo{
+    margin-left : 50px;
+    font-size: 2em;
+    cursor: pointer;
+}
+
+.menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    align-items: center;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.menu a:hover {
+    text-decoration: underline;
+}

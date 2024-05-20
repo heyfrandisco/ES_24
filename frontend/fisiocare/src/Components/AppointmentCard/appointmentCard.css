@@ -1,0 +1,26 @@
+.appointmentCard-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 95%;
+  height: 20%;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.appointmentCard-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+}
+
+.appointmentCard-info p{
+    font-size: 1.2em;
+    margin: 10px;
+}
+

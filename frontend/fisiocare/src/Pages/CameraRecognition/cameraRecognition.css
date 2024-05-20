@@ -1,0 +1,14 @@
+.camera-recognition {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: aquamarine;
+}
+
+.camera-recognition h1 {
+    font-size: 3em;
+    margin: 10px;
+}
+

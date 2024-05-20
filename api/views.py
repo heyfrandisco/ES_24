@@ -5,6 +5,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
+import jwt
+
 
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -29,10 +31,10 @@ def login(request):
     user = get_object_or_404(User, username=request.data['username'])
     if not user.check_password(request.data['password']):
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-    
+
     token = CustomTokenSerializer(data=request.data)
     serializer = UserSerializer(instance=user)
-
+    
     if token.is_valid():
         return Response({"Token": token.validated_data, "user_data":serializer.data}, status=status.HTTP_200_OK)
     
@@ -43,16 +45,15 @@ def login(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
+    print(request.data)
     serializer = UserSerializer(data=request.data)
     
     if serializer.is_valid():
+        print('entrou')
         user = serializer.save()
         user.set_password(request.data['password'])
         user.save()
-
-        token = CustomTokenSerializer(data=request.data)
-        if token.is_valid():
-            return Response(token.validated_data, status=status.HTTP_201_CREATED)
+        return Response({'User Created'}, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -75,7 +76,65 @@ def getDoctorsBySpecialty(request, specialty):
     doctors = Doctor.objects.filter(speciality=specialty)
     serializer = DoctorSerializer(doctors, many=True)
 
-    return Response({"Doctors for specialty":serializer.data})
+    return Response({"doctors":serializer.data})
+
+@api_view(['POST'])
+def createAppointment(request):
+    print(request.data)
+    date = request.data.get('date')
+    hour = request.data.get('time')
+    speciality = request.data.get('speciality')
+    doctor = request.data.get('doctor')
+
+    if len(hour.split(':')) == 2:
+        hour = f"{hour}:00"
+
+    if not (date and hour and speciality and doctor):
+        return Response({"detail": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    
+
+    print(hour)
+    appointment_data = {
+        'date': date,
+        'hour': hour,
+        'speciality': speciality,
+        'doctor': doctor
+    }
+
+    serializer = AppointmentSerializer(data=appointment_data, context={'request': request})
+    print(serializer)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getProfile(request):
+    user = request.user
+
+    # Obter o usuário
+    try:
+        user = User.objects.get(id=user.id)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    # Serializar o usuário
+    user_serializer = UserSerializer(user)
+
+    # Obter os compromissos
+    appointments = Appointment.objects.filter(user_id=user.id)
+    
+    # Serializar compromissos
+    appointment_serializer = AppointmentSerializer(appointments, many=True)
+
+    # Retornar a resposta com dados serializados
+    return Response({
+        "user": user_serializer.data,
+        "appointments": appointment_serializer.data
+    }, status=status.HTTP_200_OK)
+
 
 
 @api_view(['POST'])

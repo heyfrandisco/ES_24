@@ -31,3 +31,15 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MjE3ODc5LCJpYXQiOjE3MTYyMTc1NzksImp0aSI6ImFjMjk2YjU4MTcwMDQ2OTk4OGIxYTdmMTQyMzFjN2NlIiwidXNlcl9pZCI6MSwiaWQiOjEsInVzZXJuYW1lIjoiemUiLCJlbWFpbCI6InplQHNhcG8ucHQifQ.Pei4ocNYRJAJqHiOj1C7x0OHrA4a0pBrwYywqwLF3Sk
 
 {}
+
+###
+POST http://localhost:8000/set-appointment
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzE2MjMyMzU3LCJpYXQiOjE3MTYyMjg3NTcsImp0aSI6IjkxYzkwOTM5YjJkZDQwMzBhMGNiOGYzMzVjOTE5YTdkIiwidXNlcl9pZCI6MSwiaWQiOjEsInVzZXJuYW1lIjoiZ3VpbGhlcm1lIiwiZW1haWwiOiJndWlmYXJpYTAyQGdtYWlsLmNvbSJ9.njzDldoRIgWujIdCzZG5hVLild8fz0RrNkkfA1CI1uo
+
+{
+    "date": "2024-05-20",
+    "hour": "14:30:00",
+    "speciality": "Fisioterapia Desportiva",
+    "doctor": "João Carlos"
+}

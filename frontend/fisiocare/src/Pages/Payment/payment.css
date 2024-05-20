@@ -1,0 +1,95 @@
+.payment-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: aquamarine;
+}
+
+.payment-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30vw;
+  height: 70vh;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid black;
+}
+
+.payment-card h2 {
+  font-size: 2em;
+  margin: 5px;
+}
+
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 70%;
+  margin-top: 5%;
+}
+
+.payment-form p {
+  font-size: 1.2em;
+}
+
+.payment-card-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 75%;
+  height: 5%;
+  margin: 10px;
+}
+
+.payment-card input {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.payment-card button {
+  width: 40%;
+  height: 40px;
+  margin-top: 10%;
+  border-radius: 5px;
+  background-color: aquamarine;
+  color: black;
+  border: none;
+}
+
+.payment-card button:hover {
+  background-color: #00b3b3;
+}
+
+
+.payment-card-input-mbway-checked {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 75%;
+    height: 5%;
+    margin-top: 10%;
+}
+
+.payment-card-input-mbway-checked p {
+    font-size: 1.2em;
+    margin-right: 10px;
+}
+
+.payment-card-input-mb-checked {
+    border: 1px solid black;
+    padding: 10px;
+    margin-top: 5%;
+    border-radius: 5px;
+}
