@@ -12,6 +12,15 @@ const AppointmentInvoice = ({appointment, vat}) => {
   const [email, setEmail] = useState(''); 
 
   // Obter o nome e email do utilizador através do token
+  const token = localStorage.getItem('token');
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+  const user = JSON.parse(jsonPayload);
+  setUsername(user.username);
+  setEmail(user.email);
 
 
   // Função para gerar PDF
@@ -23,7 +32,7 @@ const AppointmentInvoice = ({appointment, vat}) => {
 
     const pdf = new jsPDF(); // Cria um novo objeto PDF
     pdf.addImage(imgData, 'PNG', 0, 0); // Adiciona a imagem ao PDF
-    pdf.save('Fatura_' + appointment.name + '.pdf'); // Salva o PDF com o nome do cliente
+    pdf.save('Fatura_' + username + '.pdf'); // Salva o PDF com o nome do cliente
 
 
     //create a new file reader

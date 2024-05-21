@@ -20,8 +20,6 @@ export default function Profile() {
         }).then((response) => {
             setUser(response?.data?.user);
             setAppointments(response?.data?.appointments);
-            console.log(user);
-            console.log(appointments);
         }
         ).catch((error) => {
             console.log(error);

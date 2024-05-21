@@ -80,7 +80,6 @@ def getDoctorsBySpecialty(request, specialty):
 
 @api_view(['POST'])
 def createAppointment(request):
-    print(request.data)
     date = request.data.get('date')
     hour = request.data.get('time')
     speciality = request.data.get('speciality')
@@ -92,9 +91,6 @@ def createAppointment(request):
     if not (date and hour and speciality and doctor):
         return Response({"detail": "All fields are required."}, status=status.HTTP_400_BAD_REQUEST)
 
-    
-
-    print(hour)
     appointment_data = {
         'date': date,
         'hour': hour,
@@ -103,7 +99,7 @@ def createAppointment(request):
     }
 
     serializer = AppointmentSerializer(data=appointment_data, context={'request': request})
-    print(serializer)
+   
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

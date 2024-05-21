@@ -125,7 +125,7 @@ export default function SetAppointment() {
                     </div>
                     <div className='appointment-card-input'>
                         <p>Médico</p>
-                        <select value={appointment.doctor} onChange={(e) => setAppointment({ ...appointment, doctor: e.target.value })}>
+                        <select value={appointment.doctor} onChange={(e) => setAppointment({ ...appointment, doctor: e.target?.value })}>
                             {doctors.map((doctor) => (
                                 <option key={doctor.id} value={doctor.name}>{doctor.name}</option>
                             ))}
