@@ -23,10 +23,12 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenSerializer
 
 
-# --- AWS KEYS ---
+# --- AWS VARIABLES ---
 aws_access_key_id = 'ASIA5JCMZJ3F6BMH2ZMR'
 aws_secret_access_key = 'vvJGZVQgWJIfT6/4/VDusjzXJjcDGEt2GdlT0OLT'
 aws_session_token = 'IQoJb3JpZ2luX2VjENP//////////wEaCXVzLXdlc3QtMiJGMEQCIGKKNcHACc18mh/qO1D5IvitQPZjpH+qiaGeGDU0Iyv5AiBsfnYQwlAP4S6GU47qNZoQ8IT/Lem++IVvqMNxYUcsLCq0AghMEAIaDDkxMjg0MTU5MjUyMyIMoVnps+s8BCzvC9mzKpECIK1S0Nl5YZEeHP5T8Jxe79RAM8FtWTwMXfqzzhTHgLtzUjwuU5zFPIujWed0Idw9BuPPptHe/5AgyfYLrCW35qWgEPTc8vZ28+lfx/ItbTcKOUxxUDGuo9Y1CW+kxhDyPUsxX1NnWOEvCpH1MWI+ZRKGwpJujXrgff3iHf7iH962vW2AcST2umq+f1ifEGN8KfgxybeOUefv/nS/05OgMVxlMor22eaPJKnVfg6E4++E23jf6vb+Xj5bXLUUaPV8v/bbSm/abvp/umN0TPnj7oaLHqnjihLX3qhWhH2aC/2Fv4a5jrXMouZelmsmyBv4qmr54x4O4DFgDvzaQwiMmc6MenllVihtf/3IDvJMW66VMInhs7IGOp4BVK4uJYgbqsEUkHplc6sCabu6N5sAdGh+vS2sPRW6wEeiQvZxuliBc1K/FIxhi4mXVFg/bMqcrjHogRd1wxEHHPfCWnfYJqaHZmEw2VZgb4UC8BxxF6qB0bCJOrP/B7mvTd/unqedM2pox2lEHk274vgoBBRwYDPYoxoDcCcAwgftU5W3/1kdKAmtaDP/i+2a3tUxRfjtbnlbTwM5/cY='
+
+bucket_name = ''
 # ----------------
 
 
@@ -148,7 +150,7 @@ def faceRecognition(request):
         region_name='us-east-1'
     )
 
-    bucket = s3.Bucket('es2023fotos')
+    bucket = s3.Bucket(bucket_name)
 
     target = request.POST['image'].split(',')[1]
 
