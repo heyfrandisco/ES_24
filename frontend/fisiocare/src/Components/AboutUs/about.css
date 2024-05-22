@@ -1,0 +1,42 @@
+.homepage-about{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100vw;
+    height: 40em;
+    background-color: aquamarine;
+    overflow-x: hidden;
+    overflow: hidden;
+}
+
+.homepage-about-text {
+    display: flex;
+    
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 10vw;
+    width: 50%;
+    height: 50%;
+    text-align: start;
+}
+
+.homepage-about-text h1{
+    font-size: 3em;
+    color: black;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.homepage-about-text p{
+    font-size: 1.5em;
+    color: black;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.homepage-about-image{
+    width: 30%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-right: 10vw;
+}

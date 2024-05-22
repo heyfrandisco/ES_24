@@ -8,6 +8,8 @@ urlpatterns = [
     path('test_token', test_token),
     path('token', CustomTokenObtainPairView.as_view()),
     
-    path('specialties/', getSpecialties),
+    path('specialities/', getSpecialties),
     path('doctors/<str:specialty>', getDoctorsBySpecialty),
+    path('set-appointment', createAppointment),
+    path('profile', getProfile),
 ]

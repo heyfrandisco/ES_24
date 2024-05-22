@@ -26,12 +26,8 @@ class Appointment(models.Model):
     speciality = models.CharField(max_length=200)
     doctor = models.CharField(max_length=200)
     paid = models.BooleanField(default=False)
-    room = models.IntegerField(default=1)
-    est_time = models.IntegerField(default=10)
+    room = models.IntegerField(default=lambda: random.randint(1, 5))
+    est_time = models.IntegerField(default=lambda: random.randint(10, 60))
 
-    def __init__(self, *args, **kwargs):
-        if 'room' not in kwargs:
-            kwargs['room'] = random.randint(1, 5)
-        if 'est_time' not in kwargs:
-            kwargs['est_time'] = random.randint(10, 60)
-        super().__init__(*args, **kwargs)
+    def __str__(self):
+        return f"{self.user} - {self.date} at {self.hour}"
