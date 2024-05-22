@@ -21,8 +21,6 @@ export default function Payment() {
       };
 
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [entity, setEntity] = useState('');
-    const [reference, setReference] = useState('');
 
     const [appointment, setAppointment] = useState({
         date: '',
@@ -41,9 +39,9 @@ export default function Payment() {
         if(numClicks <= 1) {
             // request para o backend
             //guardar a informação recebida na página através do navigate
-            console.log(location?.state?.appointment);
+           // console.log(location?.state?.appointment);
             setAppointment(location?.state?.appointment);
-            console.log(appointment);
+            //console.log(appointment);
 
             //request para o backend
 
@@ -116,12 +114,10 @@ export default function Payment() {
 
   return (
     <div className='payment-page'>
-        {invoice ? 
+        {invoice ? (
             showInvoice()
-
-         : 
+        ):(
             <div className='payment-card'>
-                {/* apresentar opções de pagamento (MBWay ou Multibanco*/}
                 <h2 className='payment-card-title'>Pagamento</h2>
                 <form className='payment-form'>
                     <div className='payment-card-input'>
@@ -137,8 +133,7 @@ export default function Payment() {
                     
                 </form>
             </div>
-        }
-                  
+            )}     
     </div>
   )
 }

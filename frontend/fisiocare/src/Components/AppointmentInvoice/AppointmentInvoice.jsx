@@ -3,24 +3,29 @@ import jsPDF from 'jspdf'; // Biblioteca para gerar PDFs
 import html2canvas from 'html2canvas'; // Biblioteca para converter HTML em imagem
 import './AppointmentInvoice.css';
 import emailjs from 'emailjs-com'; // Biblioteca para enviar emails
+import { PDFDocument } from 'pdf-lib';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const AppointmentInvoice = ({appointment, vat}) => {
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState(''); 
   const [email, setEmail] = useState(''); 
 
   // Obter o nome e email do utilizador através do token
-  const token = localStorage.getItem('token');
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-  const user = JSON.parse(jsonPayload);
-  setUsername(user.username);
-  setEmail(user.email);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    const user = JSON.parse(jsonPayload);
+    setUsername(user.username);
+    setEmail(user.email);
+  }, []);
 
 
   // Função para gerar PDF
@@ -28,20 +33,42 @@ const AppointmentInvoice = ({appointment, vat}) => {
   const generatePDF = async () => {
     const element = document.getElementById('invoice-container'); // Seleciona o elemento HTML da fatura
     const canvas = await html2canvas(element); // Converte o HTML em imagem
-    const imgData = canvas.toDataURL('image/png'); // Obtém os dados da imagem
+    const imgData = canvas.toDataURL('image/jpeg', 0.5); // Obtém os dados da imagem
 
     const pdf = new jsPDF(); // Cria um novo objeto PDF
-    pdf.addImage(imgData, 'PNG', 0, 0); // Adiciona a imagem ao PDF
-    pdf.save('Fatura_' + username + '.pdf'); // Salva o PDF com o nome do cliente
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight()); // Adiciona a imagem ao PDF
+    // pdf.save('Fatura_' + username + '.pdf'); // Salva o PDF com o nome do cliente
+
+
+    const pdfBlob = pdf.output('blob');
+
+    const existingPdfBytes = await pdfBlob.arrayBuffer();
+
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+    const pages = pdfDoc.getPages();
+    for (const page of pages) {
+        const { width, height } = page.getSize();
+        const jpgImageBytes = await fetch(imgData).then(res => res.arrayBuffer());
+        const jpgImage = await pdfDoc.embedJpg(jpgImageBytes, { width, height });
+        page.drawImage(jpgImage, {
+            x: 0,
+            y: 0,
+            width: width,
+            height: height,
+        });
+    }
+
+    const compressedPdfBytes = await pdfDoc.save();
+
+    const compressedPdfBlob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
 
 
     //create a new file reader
     const reader = new FileReader();
     //read pdf otimized.pdf as data url
-    reader.readAsDataURL(pdf.output('blob'));
+    reader.readAsDataURL(compressedPdfBlob);
 
-    //print pdf size
-    //console.log(pdf.output('blob').size);
 
     reader.onload = async (e) => {
 
@@ -52,56 +79,29 @@ const AppointmentInvoice = ({appointment, vat}) => {
         const emailParams = {
             to_name: username,
             to_email: email,
-            file: reader.result
+            file: reader.result.split(',')[1],
         };
 
-        const attachments = [
-            {
-                name: 'Fatura_' + username + '.pdf',
-                data: reader.result
-            }
-        ];
+        const templateParams = {
+          to_name: username,
+          to_email: email,
+          message: 'Veja em anexo a fatura solicitada.',
+          file: reader.result.split(',')[1],
+      };
 
-
-        emailjs.send(serviceID, templateID, emailParams, userID, attachments)
+        emailjs.send(serviceID, templateID, emailParams, userID, templateParams)
             .then((result) => {
-                console.log(result.text);
+                if (result.text === 'OK') {
+                    console.log('Email enviado com sucesso');
+                    navigate('/');
+                }
             }, (error) => {
                 console.log(error.text);
             });
 
     };
 
-    //TODO: TAMANHO DO PDF MUITO GRANDE E NÃO É ENVIADO POR EMAIL
   };
-
-  // Função para enviar email com a fatura em PDF
-  const sendEmailWithPDF = () => {
-    console.log("Sending email with PDF")
-    emailjs.send({
-      service_id: 'service_uztbwkf', // ID do serviço no EmailJS
-
-      user_id: 'RrsZt6y5a8U6OsQ7C',
-      from_name: 'FisioCare', // Nome do remetente
-      from_email: 'fisiocareclinic24@gmail.com', // Email do remetente
-      to_name: username, // Nome do destinatário
-      to_email: email, // Email do destinatário
-    
-      subject: 'Fatura da sua Consulta - FisioCare', // Assunto do email
-      text: 'Em anexo encontrará a fatura da sua consulta.', // Corpo do email
-      
-      /*
-      attachments: [
-        {
-          name: 'Fatura_' + appointment.name + '.pdf', // Nome do arquivo PDF
-          path: '../../Invoices/', // Caminho para o arquivo PDF
-          type: 'application/pdf', // Tipo de arquivo
-        },
-      ],
-      */
-    });
-  };
-
 
 
 
