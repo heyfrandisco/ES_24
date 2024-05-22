@@ -23,6 +23,13 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenSerializer
 
 
+# --- AWS KEYS ---
+aws_access_key_id = 'ASIA5JCMZJ3F6BMH2ZMR'
+aws_secret_access_key = 'vvJGZVQgWJIfT6/4/VDusjzXJjcDGEt2GdlT0OLT'
+aws_session_token = 'IQoJb3JpZ2luX2VjENP//////////wEaCXVzLXdlc3QtMiJGMEQCIGKKNcHACc18mh/qO1D5IvitQPZjpH+qiaGeGDU0Iyv5AiBsfnYQwlAP4S6GU47qNZoQ8IT/Lem++IVvqMNxYUcsLCq0AghMEAIaDDkxMjg0MTU5MjUyMyIMoVnps+s8BCzvC9mzKpECIK1S0Nl5YZEeHP5T8Jxe79RAM8FtWTwMXfqzzhTHgLtzUjwuU5zFPIujWed0Idw9BuPPptHe/5AgyfYLrCW35qWgEPTc8vZ28+lfx/ItbTcKOUxxUDGuo9Y1CW+kxhDyPUsxX1NnWOEvCpH1MWI+ZRKGwpJujXrgff3iHf7iH962vW2AcST2umq+f1ifEGN8KfgxybeOUefv/nS/05OgMVxlMor22eaPJKnVfg6E4++E23jf6vb+Xj5bXLUUaPV8v/bbSm/abvp/umN0TPnj7oaLHqnjihLX3qhWhH2aC/2Fv4a5jrXMouZelmsmyBv4qmr54x4O4DFgDvzaQwiMmc6MenllVihtf/3IDvJMW66VMInhs7IGOp4BVK4uJYgbqsEUkHplc6sCabu6N5sAdGh+vS2sPRW6wEeiQvZxuliBc1K/FIxhi4mXVFg/bMqcrjHogRd1wxEHHPfCWnfYJqaHZmEw2VZgb4UC8BxxF6qB0bCJOrP/B7mvTd/unqedM2pox2lEHk274vgoBBRwYDPYoxoDcCcAwgftU5W3/1kdKAmtaDP/i+2a3tUxRfjtbnlbTwM5/cY='
+# ----------------
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
@@ -78,6 +85,25 @@ def createAppointment(request):
     serializer = AppointmentSerializer(data=appointment_data, context={'request': request})
     if serializer.is_valid():
         serializer.save()
+
+        dynamodb = boto3.resource(
+            'dynamodb', 
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            aws_session_token=aws_session_token,
+            region_name='us-east-1'
+        )
+        
+        # TODO create table on dynamo
+        table = dynamodb.Table('appointments')
+
+        dynamodb_response = table.put_item(
+            Item={
+                'appointment_id': appointment.id,
+                'paid': False
+            }
+        )
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -108,16 +134,42 @@ def getDoctorsBySpecialty(request, specialty):
 def faceRecognition(request):
     rekognition = boto3.client(
         'rekognition',
-        aws_access_key_id='',
-        aws_secret_access_key='',
-        aws_session_token='',
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        aws_session_token=aws_session_token,
         region_name='us-east-1'
     )
 
     s3 = boto3.resource(
         's3',
-        aws_access_key_id='',
-        aws_secret_access_key='',
-        aws_session_token='',
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+        aws_session_token=aws_session_token,
         region_name='us-east-1'
     )
+
+    bucket = s3.Bucket('es2023fotos')
+
+    target = request.POST['image'].split(',')[1]
+
+    x = bool()
+
+    for i in buckes.objects.all():
+        path, filename = os.path.split(i.key)
+        img = bucket.Object(filename)
+        
+        resp = rekognition.compare_faces(
+                                            SimilarityThreshold=75,
+                                            SourceImage={'Bytes': img.get()['Body'].read()},
+                                            TargetImage={'Bytes': base64.b64decode(target)}
+                                        )
+        
+        for match in resp['FaceMatches']:
+            pos = match['Face']['BoundingBox']
+            similarity = str(match['Similarity'])
+            x = True
+            
+        if(len(x) == 0):
+            x = False
+            
+        return Response({'AUTH': x})
