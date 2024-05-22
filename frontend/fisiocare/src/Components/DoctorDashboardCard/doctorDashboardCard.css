@@ -1,0 +1,37 @@
+.doctor-dashboard-card {
+  display: flex;
+  flex-direction: row;
+    justify-content: space-around;
+  align-items: center;
+  width: 95%;
+  min-height: 10%;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.doctor-dashboard-card-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 33%;
+  height: 100%;
+  border-right: 1px solid black;
+}
+
+.doctor-dashboard-card-info p{
+    font-size: 1.2em;
+    margin: 10px;
+}
+
+.doctor-dashboard-card-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: aquamarine;
+    width: 10%;
+    height: 50%;
+    border-radius: 10px;
+}

@@ -6,8 +6,10 @@ import Close from '../../Assets/close.png';
 
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {
+    const navigate = useNavigate();
     const [appointments, setAppointments] = useState([{}]);
     const [user, setUser] = useState({});
     
@@ -27,7 +29,9 @@ export default function Profile() {
 
     }, []);
 
-    
+    const goTo = () => {
+        navigate('/doctor-dashboard');
+    }
 
     const goBack = () => {
         window.history.back();
@@ -48,7 +52,7 @@ export default function Profile() {
                     <p>Email: {user.email}</p>
                 </div>
                 <div className='profile-image'>
-                    <img className='profile-pic' src='https://www.w3schools.com/howto/img_avatar.png' alt='profile'/>
+                    <img className='profile-pic' src='https://www.w3schools.com/howto/img_avatar.png' onClick={goTo} alt='profile'/>
                     <img className='go-back-button' src={Close} onClick={goBack} alt='profile'/>
                 </div>
             </div>

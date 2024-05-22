@@ -58,13 +58,14 @@ export default function Payment() {
         }
     }
 
+    /*
     const showInvoice = () => {
         console.log(appointment);
         return (
             <AppointmentInvoice appointment={appointment} vat={vat}/>
         )
     }
-
+*/
 
 
 
@@ -115,7 +116,7 @@ export default function Payment() {
   return (
     <div className='payment-page'>
         {invoice ? (
-            showInvoice()
+            <AppointmentInvoice appointment={appointment} vat={vat}/>
         ):(
             <div className='payment-card'>
                 <h2 className='payment-card-title'>Pagamento</h2>
