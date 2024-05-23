@@ -261,3 +261,36 @@ def faceRecognition(request):
             return Response({'AUTH': False, 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     else:
         return Response({'AUTH': False, 'error': 'Face not recognized.'}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    
+    
+    
+### ---
+@api_view(['POST'])
+def populate_doctors(request):
+    doctor_data = [
+        {'name': 'João Pratas ', 'speciality': 'Fisioterapia Respiratória'},
+        {'name': 'Carlos Martins ', 'speciality': 'Fisioterapia Respiratória'},
+        {'name': 'Ricardo Pacheco ', 'speciality': 'Recuperação Muscular'},
+        {'name': 'Renato Gonçalves', 'speciality': 'Recuperação Muscular'},
+        {'name': 'Pedro Pereira', 'speciality': 'Fisioterapia Desportiva'},
+        {'name': 'Gonçalo Almeida', 'speciality': 'Fisioterapia Desportiva'},
+        {'name': 'Paulo Castro', 'speciality': 'Fisioterapia Geriátrica'},
+        {'name': 'Nuno Santos', 'speciality': 'Fisioterapia Geriátrica'},
+    ] 
+    
+    created_count = 0
+    errors = []
+
+    for data in doctor_data:
+        serializer = DoctorSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            created_count += 1
+        else:
+            errors.append(serializer.errors)
+
+    if created_count > 0:
+        return Response({"message": f"Successfully created {created_count} doctors."}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)

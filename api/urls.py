@@ -16,4 +16,7 @@ urlpatterns = [
     path('recognition', faceRecognition),
     path('finish-appointment/<int:id>', finishAppointment),
     path('payment/<int:id>', payment),
+    
+    ### ---
+    path('populate-doctors', populate_doctors),
 ]
