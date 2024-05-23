@@ -26,7 +26,11 @@ function WebcamCapture() {
       }
       }
       ).then((response) => {
-        console.log(response);
+        if (response?.status === 200) {
+          console.log(response);
+          //navigate to Dashboard page
+          navigate('/dashboard');
+        }
       }).catch((error) => {
         console.log(error);
       });
@@ -34,7 +38,7 @@ function WebcamCapture() {
         
       //after response (response should contain the patient info and the appointment info)
       //navigate to Dashboard page
-      navigate("/dashboard");
+      
 
     }, [webcamRef, setImgSrc]);
   

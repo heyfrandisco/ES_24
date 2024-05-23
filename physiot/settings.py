@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'base',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
-    # 'knox',
+    'rest_framework_swagger',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

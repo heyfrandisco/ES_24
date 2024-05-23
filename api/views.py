@@ -7,6 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 import jwt
 import json
+from django.utils import timezone
+from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -208,15 +210,22 @@ def waitingRoom(request):
     try:
         apps = Appointment.objects.filter(arrived=True)
 
-        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-        table = dynamodb.Table('Appointments')
+        dynamodb = boto3.resource(
+            'dynamodb', 
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+            aws_session_token=aws_session_token,
+            region_name='us-east-1'
+        )
+
+        table = dynamodb.Table('appointments')
 
         appointment_data = []
         for appointment in apps:
             user_username = appointment.user.username if appointment.user else None
             
             response = table.get_item(
-                Key={'appointment_id': appointment.id}
+                Key={'appointment_id': str(appointment.id)}
             )
             paid_status = response.get('Item', {}).get('paid', False)
             
@@ -293,6 +302,10 @@ def faceRecognition(request):
 
     target = request.data.get('img')
 
+    #treat the image
+    target = target.split(',')[1]
+
+
     authorized = False
 
     for i in bucket.objects.all():
@@ -304,24 +317,32 @@ def faceRecognition(request):
             SourceImage={'Bytes': img.get()['Body'].read()},
             TargetImage={'Bytes': base64.b64decode(target)}
         )
+
+        
         
         for match in resp['FaceMatches']:
-            authorized = True
-            break
+            if match['Similarity'] > 75:
+                authorized = True
+                break
         
         if authorized:
             break
             
+    print(authorized)
     if authorized:
         try:
             user = request.user
-            now = timezone.now()
-
-            closest_appointment = Appointment.objects.filter(user=user, date__gte=now.date()).order_by('date', 'hour').first()
+            print(user)
+            #get time now
+            now = datetime.now()
+            now_date = now.strftime('%Y-%m-%d')
+            now_time = now.strftime('%H:%M:%S')
             
-            if closest_appointment:
-                closest_appointment.arrived = True
-                closest_appointment.save()
+            #get the closest of the day the user is in and mark as arrived
+            appointment = Appointment.objects.filter(user=user.id, date=now_date).order_by('hour').first()
+            if appointment:
+                appointment.arrived = True
+                appointment.save()
                 
                 return Response({'AUTH': True, 'message': 'Arrival marked successfully.'}, status=status.HTTP_200_OK)
             else:

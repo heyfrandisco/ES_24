@@ -8,7 +8,10 @@ export default function SetAppointment() {
     const navigate = useNavigate();
 
     //criar um array de horários ocupados
-    const [busyTimes, setBusyTimes] = useState([]);
+    const [busyTimes, setBusyTimes] = useState([{
+        time: '',
+        date: ''
+    }]);
     const [specialities, setSpecialities] = useState([]);
     const [doctors, setDoctors] = useState([]);
 
@@ -59,17 +62,19 @@ export default function SetAppointment() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        //verificar se o horário está ocupado
-        const isTimeBusy = busyTimes.some(busyTime => busyTime === appointment.time);
-        if(isTimeBusy) {
-            alert('Horário ocupado, por favor escolha outro horário');
+        ///verificar no array de horários ocupados se o horário selecionado está ocupado
+        //se estiver ocupado, mostrar mensagem de erro
+        //se não estiver ocupado, enviar o pedido para o backend e adicionar o novo horário ao array de horários ocupados
+
+        if (busyTimes.some(busyTime => busyTime.time === appointment.hour && busyTime.date === appointment.date)) {
+            alert('Horário ocupado');
             return;
-        }else {
-            setBusyTimes([...busyTimes, appointment.time]);
-            console.log(busyTimes);
         }
 
-        console.log(appointment);
+        //adicionar o novo horário ao array de horários ocupados
+        setBusyTimes([...busyTimes, { time: appointment?.hour, date: appointment?.date }]);
+
+        console.log(busyTimes);
 
 
         // request para o backend
