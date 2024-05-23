@@ -1,0 +1,62 @@
+.dasboard-appointment-card {
+  display: flex;
+  flex-direction: row;
+  width: 95%;
+  height: 20%;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin-top: 10px;
+  background-color: white;
+}
+
+.dashboard-appointment-patient-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 33%;
+  height: 100%;
+  border-right: 1px solid black;
+}
+
+.dashboard-appointment-patient-info p {
+    font-size: 1.2em;
+    margin: 10px;
+    font-weight: 500;
+}
+
+
+.dashboard-appointment-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 33%;
+    height: 100%;
+    border-right: 1px solid black;
+    gap: 20px;
+}
+
+.dashboard-appointment-info p {
+    font-size: 1.1em;
+    margin: 10px;
+    font-weight: 500;
+}
+
+.dashboard-appointment-office-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 33%;
+    height: 100%;
+}
+
+.dashboard-appointment-office-info p {
+    font-size: 1.2em;
+    margin: 10px;
+    font-weight: 500;
+}
+
+
+

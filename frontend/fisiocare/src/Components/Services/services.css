@@ -1,0 +1,47 @@
+
+.homepage-services{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    min-height: 50em;
+    background-color: aquamarine;
+    overflow-x: hidden;
+    padding-bottom: 20px;
+}
+
+.homepage-services-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+    width: 80%;
+    height: 50%;
+    text-align: start;
+}
+
+.homepage-services-text h1{
+    font-size: 3em;
+    color: black;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.homepage-services-text p{
+    font-size: 1.5em;
+    color: black;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.homepage-services-cards{
+    padding-left: 5%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin-top: 20px;
+}

@@ -32,9 +32,5 @@ class Appointment(models.Model):
     arrived = models.BooleanField(default=False)
     state = models.CharField(max_length=200, default="waiting for payment") # wfp, scheduled, finished
 
-    def __init__(self, *args, **kwargs):
-        if 'room' not in kwargs:
-            kwargs['room'] = random.randint(1, 5)
-        if 'est_time' not in kwargs:
-            kwargs['est_time'] = random.randint(10, 60)
-        super().__init__(*args, **kwargs)
+    def __str__(self):
+        return f"{self.user} - {self.date} at {self.hour}"

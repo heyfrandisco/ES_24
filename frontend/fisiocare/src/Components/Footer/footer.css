@@ -1,0 +1,85 @@
+.footer{
+    background-color: aquamarine;
+    padding: 20px 0;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid black;
+}
+
+.footer h1{
+    font-size: 2em;
+    color: black;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.footer p{
+    font-size: 1.5em;
+    color: black;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.footer-info{
+    display: flex;
+    padding: 20px 0;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+}
+
+.footer-contact{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: 50%;
+}
+
+.footer-social{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    width: 50%;
+    height: 50%;
+}
+
+.linkedin{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+    text-decoration: none;
+    gap: 10px;
+}
+
+.linkedin-icon{
+    width: 50px;
+    height: auto;
+}
+
+.instagram{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50%;
+    text-decoration: none;
+    gap: 10px;
+}
+
+.instagram-icon{
+    width: 50px;
+    height: auto;
+}

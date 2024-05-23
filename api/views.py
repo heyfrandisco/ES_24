@@ -5,6 +5,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
+import jwt
+
 
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
@@ -38,10 +40,10 @@ def login(request):
     user = get_object_or_404(User, username=request.data['username'])
     if not user.check_password(request.data['password']):
         return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
-    
+
     token = CustomTokenSerializer(data=request.data)
     serializer = UserSerializer(instance=user)
-
+    
     if token.is_valid():
         return Response({"Token": token.validated_data, "user_data":serializer.data}, status=status.HTTP_200_OK)
     
@@ -52,9 +54,11 @@ def login(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
+    print(request.data)
     serializer = UserSerializer(data=request.data)
     
     if serializer.is_valid():
+        print('entrou')
         user = serializer.save()
         user.set_password(request.data['password'])
         user.save()

@@ -1,0 +1,22 @@
+.webcam {
+    width: 100%;
+    height: 80%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+.webcam-button {
+    display: block;
+    width: 40%;
+    height: 40px;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    border-radius: 5px;
+    background-color: aquamarine;
+    color: black;
+}
+
+.webcam-button:hover {
+    background-color: #00b3b3;
+}
