@@ -113,14 +113,14 @@ const AppointmentInvoice = ({appointment, vat}) => {
             <p>Nome: {username}</p>
             <p>Email: {email}</p>
             <p>Data: {appointment.date}</p>
-            <p>Hora: {appointment.time}</p>
+            <p>Hora: {appointment.hour}</p>
             <p>Especialidade: {appointment.speciality}</p>
             <p>Médico: {appointment.doctor}</p>
             <p>Número de Contribuinte: {vat}</p>
             <p>Valor da Consulta: €75</p>
         </div>
       </div>
-      <button className='invoice-button' onClick={generatePDF}>Gerar Fatura</button>
+      <button className='invoice-button' onClick={generatePDF}>Enviar Fatura</button>
     </div>
   );
 };

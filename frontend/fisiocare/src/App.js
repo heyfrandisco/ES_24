@@ -9,6 +9,7 @@ import Payment from './Pages/Payment/payment';
 import Profile from './Pages/Profile/profile';
 import CameraRecognition from './Pages/CameraRecognition/cameraRecognition';
 import Dashboard from './Pages/Dashboard/dashboard';
+import DoctorDashboard from './Pages/DoctorDashboard/doctorDashboard';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/camera-recognition' element={<CameraRecognition/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
+        <Route path='doctor-dashboard' element={<DoctorDashboard/>}/>
       </Routes>
     </BrowserRouter>
   );

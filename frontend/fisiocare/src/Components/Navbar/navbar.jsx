@@ -10,8 +10,11 @@ function Navbar() {
 
 
   const goToWelcome = () => {
+    /*
     let welcome = document.getElementById("welcome");
     welcome.scrollIntoView({behavior: "smooth"});
+    */
+   navigate('/camera-recognition');
   }
 
   const goToAbout = () => {

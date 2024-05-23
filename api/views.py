@@ -147,6 +147,7 @@ def getSpecialties(request):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def payment(request, id):
     try:
         app = Appointment.objects.get(id=id)
@@ -201,6 +202,7 @@ def finishAppointment(request, id):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def waitingRoom(request):
     try:
         apps = Appointment.objects.filter(arrived=True)
@@ -224,8 +226,6 @@ def waitingRoom(request):
         
     except Exception as e:
         return Response({'detail': 'Could not fetch appointments', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 
 @api_view(['GET'])
 def getDoctorsBySpecialty(request, specialty):
@@ -279,7 +279,7 @@ def faceRecognition(request):
 
     bucket = s3.Bucket(bucket_name)
 
-    target = request.POST['img'].split(',')[1]
+    target = request.data.get('img')
 
     authorized = False
 

@@ -12,10 +12,10 @@ export default function SetAppointment() {
     const [specialities, setSpecialities] = useState([]);
     const [doctors, setDoctors] = useState([]);
 
-
+    const [app, setApp] = useState({});
     const [appointment, setAppointment] = useState({
         date: '',
-        time: '',
+        hour: '',
         speciality: '',
         doctor: ''
     });
@@ -71,7 +71,6 @@ export default function SetAppointment() {
 
         console.log(appointment);
 
-        /*setAppointment(updatedAppointment);*/
 
         // request para o backend
         axios.post('http://localhost:8000/set-appointment', appointment,{
@@ -81,15 +80,14 @@ export default function SetAppointment() {
             }
         )
         .then((response) => {
-            console.log(response);
+            console.log("Serializer data: ", response);
+            setApp(response?.data);
+            console.log("Appointment data: ", app);
+            navigate('/payment', { state: { appointment: response?.data } });
         })
         .catch((error) => {
             console.log(error);
         })
-
-        
-
-        navigate('/payment', { state: { appointment: appointment } });
 
         setAppointment({
             date: '',
@@ -113,7 +111,7 @@ export default function SetAppointment() {
                     </div>
                     <div className='appointment-card-input'>
                         <p>Hora</p>
-                        <input type='time' value={appointment.time} onChange={(e) => setAppointment({ ...appointment, time: e.target.value })} placeholder='Hora'/>
+                        <input type='time' value={appointment.hour} onChange={(e) => setAppointment({ ...appointment, hour: e.target.value })} placeholder='Hora'/>
                     </div>
                     <div className='appointment-card-input'>
                         <p>Especialidade</p>
