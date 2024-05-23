@@ -12,7 +12,7 @@ export default function SetAppointment() {
     const [specialities, setSpecialities] = useState([]);
     const [doctors, setDoctors] = useState([]);
 
-
+    const [app, setApp] = useState({});
     const [appointment, setAppointment] = useState({
         date: '',
         time: '',
@@ -21,7 +21,7 @@ export default function SetAppointment() {
     });
 
     useEffect(() => {
-        axios.get('http://localhost:8000/specialities/', {
+        axios.get(process.env.BACKEND_API_URL + '/specialities/', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -38,7 +38,7 @@ export default function SetAppointment() {
 
     //send request to backend to get doctors for the selected speciality
     useEffect(() => {
-        axios.get(`http://localhost:8000/doctors/${appointment.speciality}`, {
+        axios.get(process.env.BACKEND_API_URL + `/doctors/${appointment.speciality}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -71,25 +71,23 @@ export default function SetAppointment() {
 
         console.log(appointment);
 
-        /*setAppointment(updatedAppointment);*/
 
         // request para o backend
-        axios.post('http://localhost:8000/set-appointment', appointment,{
+        axios.post(process.env.BACKEND_API_URL + '/set-appointment', appointment,{
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             }
         )
         .then((response) => {
-            console.log(response);
+            console.log("Serializer data: ", response);
+            setApp(response?.data);
+            console.log("Appointment data: ", app);
+            navigate('/payment', { state: { appointment: response?.data } });
         })
         .catch((error) => {
             console.log(error);
         })
-
-        
-
-        navigate('/payment', { state: { appointment: appointment } });
 
         setAppointment({
             date: '',

@@ -20,7 +20,7 @@ export default function Register() {
         console.log(userData);
 
         // request para o backend
-        axios.post('http://localhost:8000/register', userData)
+        axios.post(process.env.BACKEND_API_URL + '/register', userData)
         .then((response) => {
             //if responde is 201
             if (response.status === 201) {

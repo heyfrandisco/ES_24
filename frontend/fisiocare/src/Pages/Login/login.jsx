@@ -18,7 +18,7 @@ export default function Login() {
 
     // request para o backend
     //colocar token no local storage
-    axios.post('http://localhost:8000/login', {
+    axios.post(process.env.BACKEND_API_URL + '/login', {
       username: username1,
       password: userPassword
     })

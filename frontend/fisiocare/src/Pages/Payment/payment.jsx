@@ -3,6 +3,7 @@ import { redirect, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import AppointmentInvoice from '../../Components/AppointmentInvoice/AppointmentInvoice';
 import './payment.css';
+import axios from 'axios';
 
 export default function Payment() {
 
@@ -22,12 +23,7 @@ export default function Payment() {
 
     const [phoneNumber, setPhoneNumber] = useState('');
 
-    const [appointment, setAppointment] = useState({
-        date: '',
-        time: '',
-        speciality: '',
-        doctor: ''
-    });
+    const [appointment, setAppointment] = useState({});
 
 
     const handlePayment = (e) => {
@@ -37,38 +33,36 @@ export default function Payment() {
 
         //verificar se o botão foi clicado apenas 1 vez
         if(numClicks <= 1) {
-            // request para o backend
-            //guardar a informação recebida na página através do navigate
-           // console.log(location?.state?.appointment);
+            
+            //console.log(location?.state?.appointment);
             setAppointment(location?.state?.appointment);
             //console.log(appointment);
 
-            //request para o backend
-
-
-            //gerar fatura
-            setInvoice(true);
-
-
-            setNumClicks(0);
-
+            //post to backend with appointment id and the token
+            axios.post(process.env.BACKEND_API_URL + `/payment/${appointment.id}`,{
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                console.log(response);
+                if(response.status === 200){
+                    setNumClicks(0);
+                    setInvoice(true);
+                }
+            }
+            )
+            .catch((error) => {
+                console.log(error);
+            }
+        )
         }else{
             alert('Pagamento já efetuado');
             redirect('/');
         }
     }
 
-    /*
-    const showInvoice = () => {
-        console.log(appointment);
-        return (
-            <AppointmentInvoice appointment={appointment} vat={vat}/>
-        )
-    }
-*/
-
-
-
+    
     //função show para mostrar o pagamento por MBWay
 
     const showMbway = () => {

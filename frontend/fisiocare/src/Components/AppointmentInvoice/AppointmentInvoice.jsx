@@ -113,7 +113,7 @@ const AppointmentInvoice = ({appointment, vat}) => {
             <p>Nome: {username}</p>
             <p>Email: {email}</p>
             <p>Data: {appointment.date}</p>
-            <p>Hora: {appointment.time}</p>
+            <p>Hora: {appointment.hour}</p>
             <p>Especialidade: {appointment.speciality}</p>
             <p>Médico: {appointment.doctor}</p>
             <p>Número de Contribuinte: {vat}</p>

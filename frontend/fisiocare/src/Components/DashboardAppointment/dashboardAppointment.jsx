@@ -1,7 +1,7 @@
 import React from 'react'
 import './dashboardAppointment.css'
 
-function DashboardAppointment() {
+function DashboardAppointment({appointment}) {
   return (
     <>
       <div className='dasboard-appointment-card'>

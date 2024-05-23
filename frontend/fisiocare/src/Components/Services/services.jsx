@@ -5,13 +5,14 @@ import axios from 'axios';
 import { useState } from 'react';
 
 
+
 function Services() {
 
   const [specialities, setSpecialities] = useState([]);
 
   useEffect(() => {
     //get the specialities from the backend
-    axios.get('http://localhost:8000/specialities/', {
+    axios.get(process.env.BACKEND_API_URL + '/specialities/', {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
