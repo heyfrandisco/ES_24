@@ -24,7 +24,7 @@ export default function DoctorDashboard() {
 
   return (
     <div className='doctor-dashboard-page'>
-        <h1>Doctor Dashboard</h1>
+        <h1>Admin Dashboard</h1>
         <div className='doctor-dashboard-container'>
             {appointments.map((appointment) => {
                 return <DoctorDashboardCard key={appointment} appointment={appointment}/>

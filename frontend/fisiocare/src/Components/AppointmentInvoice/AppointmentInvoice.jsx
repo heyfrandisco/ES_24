@@ -120,7 +120,7 @@ const AppointmentInvoice = ({appointment, vat}) => {
             <p>Valor da Consulta: €75</p>
         </div>
       </div>
-      <button className='invoice-button' onClick={generatePDF}>Gerar Fatura</button>
+      <button className='invoice-button' onClick={generatePDF}>Enviar Fatura</button>
     </div>
   );
 };
