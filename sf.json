@@ -1,0 +1,107 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "Wait4Payment",
+  "States": {
+    "Wait4Payment": {
+      "Type": "Wait",
+      "Seconds": 10,
+      "Next": "CheckPayment"
+    },
+    "CheckPayment": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:912841592523:function:CheckPayment:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Next": "ParseBody"
+    },
+    "ParseBody": {
+      "Type": "Pass",
+      "Parameters": {
+        "body.$": "States.StringToJson($.body)"
+      },
+      "Next": "ParsePaymentStatus"
+    },
+    "ParsePaymentStatus": {
+      "Type": "Pass",
+      "Parameters": {
+        "appointment_id.$": "$.body.appointment_id",
+        "paid.$": "$.body.paid"
+      },
+      "Next": "Choice"
+    },
+    "Choice": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.paid",
+          "BooleanEquals": true,
+          "Next": "Success (1)"
+        }
+      ],
+      "Default": "ParseAppointmentID"
+    },
+    "Success (1)": {
+      "Type": "Succeed"
+    },
+    "ParseAppointmentID": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:912841592523:function:ParseAppID:$LATEST",
+      "Next": "DynamoDBDeleteItem"
+    },
+    "DynamoDBDeleteItem": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:deleteItem",
+      "Parameters": {
+        "TableName": "Appointments",
+        "Key": {
+          "appointment_id": {
+            "S.$": "$.body.appointment_id"
+          }
+        }
+      },
+      "Next": "DelAppSQL"
+    },
+    "DelAppSQL": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:912841592523:function:DelAppSQL:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Next": "Success"
+    },
+    "Success": {
+      "Type": "Succeed"
+    }
+  }
+}

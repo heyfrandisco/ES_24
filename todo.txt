@@ -3,3 +3,13 @@ criar appointment
     step -> verificar intervalo de tempo (1min) 
 
     lambda -> ver se 
+
+
+    aws dynamodb create-table \
+    --table-name appointments \
+    --attribute-definitions \
+        AttributeName=appointment_id,AttributeType=S \
+    --key-schema \
+        AttributeName=appointment_id,KeyType=HASH \
+    --provisioned-throughput \
+        ReadCapacityUnits=5,WriteCapacityUnits=5

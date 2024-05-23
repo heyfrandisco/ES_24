@@ -26,9 +26,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 # --- AWS VARIABLES ---
-aws_access_key_id='ASIA5JCMZJ3F2IIFLGI5'
-aws_secret_access_key='hnaQrUKoPv05QLg+MDPkprjqLhjn8+eYV0etloVI'
-aws_session_token='IQoJb3JpZ2luX2VjEPP//////////wEaCXVzLXdlc3QtMiJHMEUCIQD8mxJ2wjnUfDrXwAkDSCVc1/VyLoogEic4tcotjReK6gIgJiLrBBn/oVFtz905wC/oxIuIjO7Kt6ldoTwgpFkquQMqtAIIbBACGgw5MTI4NDE1OTI1MjMiDIsExJHJNUVnx/+MwyqRAmJ8akBh3XU4CbJhcDS4iW8bEjatbUOvXO5Qv3ysSMR3noiIs5aVelZkgImJztgOP+DxSfOpg+aeXG2fq5LN0F9xWG0ZWUMKXqrmMHDklVezH64G64dbVQcrhOYQZRdU6Pd8/ZBteo8AzmU03Uwlsq3vBnEklKmN8e1DIVPxVqhFUEDPnm82wRMG8gWOcPJaqSznwsifh0L1zMKL6sOmHdM3784M2IizJ6c+KeloQXKbkzGCqxO9ctb2JHT1pG52+ypDfppIoBZHg/lAvBiPmjj0XLH5kXELYEMoQxpLNBCVSicy6HGfoFrsqEXjsOB6vCbN4tLNFQSGnovzJb554FTXt40xAR37cMa7DFc2l0kKcDCW1LqyBjqdAV8YqCdDXg8SyZBUdtjq/wNgQ67bfTUxUAUyeoMM9MY0ghO7gKU8nxR7x4yHPYmbp5OPNGMB+HJvNXrK+TpiFUCtwWXfhICLTiprr7NuxnKl+43OIGQfFCPBGav9sLWaKnhLT7dOMH9Ulrp1LeU6gM11tHM8ZaGCH7f/9HsUYxodoi1XlmtEOhVoqzWnoRFLZcplziP5VFECXXomT1c='
+aws_access_key_id='ASIA5JCMZJ3FQC7ABUPX'
+aws_secret_access_key='nwzQi4qlUjeYkumX3xu8cFmTtNCHidIx2VU12bDa'
+aws_session_token='IQoJb3JpZ2luX2VjEAAaCXVzLXdlc3QtMiJIMEYCIQD3v0mro3weVUf+SPHv9b2yudvJbHwwwcMDuMpKRI2ECQIhAL3o0gnH1IOG6aSWEO3m15Jc3Vok3CtMrMtC3ybAOG8cKrQCCHkQAhoMOTEyODQxNTkyNTIzIgxRHi8/crfcf4+Qv84qkQJm7Kodt2jR7FPqU63isAwlgkJwUFixZy6yRQCktCXpnNrRnB2s9DVH+ouVy8r9MIyW7hGEcE27Tzah+64nzXkKWMKUWum5m46hGk6bTiNuYUgxqZ3j4nUVeq0/YoziZGRhs/DTvRq/WK4pcj8UJEz6IX2OT+4cEttvSJwK8siz4yR6JrXtDozjPGyCYnumrf/GzxyuUrXFSY76Vg2UXdbM4lJ3F7xhPdxLWUifG88b4dCykKUFJ+ay+HDUj0kP8Lu8la1BiFUwFz5i1/Jngwlaa67uh4RSe6Xu38f7DOnGz9b1rnmQ/pl8yOog6FwCHBW+Ohc14sorwNbuLa1hs9q0O4X7LpDhjsu5ZqJD9q4BzGEwg8e9sgY6nAEO8MZiJgnFgaVEJ1chkb2hFafE1fGiUTS8286JJBACiJZZr1w3xALap3KMpXEVZE7LVgpbj4Ze1w51jraoXX3GuC8Df3oQz9LsCknd6YrcXWx1FSDqL/mt5nH/y+/y1ip7A/r49r1/lfB4zfkOlTRiTQHiWbLd/2RMk+ZiZjWaArKsGXdI6cE0JecbG1s3Q/posK2IYJ3Gegm7v5o='
 
 sf_arn = 'arn:aws:states:us-east-1:912841592523:stateMachine:appointment_handler'
 
@@ -102,16 +102,16 @@ def createAppointment(request):
             region_name='us-east-1'
         )
         
-        table = dynamodb.Table('Appointments')
+        table = dynamodb.Table('appointments')
 
         dynamodb_response = table.put_item(
             Item={
-                'appointment_id': appointment_instance.id,
+                'appointment_id': str(appointment_instance.id),
                 'paid': False
             }
         )
         
-        step = boto3.resource(
+        step = boto3.client(
             'stepfunctions', 
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key,
@@ -120,11 +120,10 @@ def createAppointment(request):
         )
         
         try:
-            response = client.start_execution(
+            response = step.start_execution(
                 stateMachineArn=sf_arn,
                 input=json.dumps({'appointment_id': appointment_instance.id})
             )
-            
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         except Exception as e:
@@ -164,11 +163,11 @@ def payment(request, id):
             region_name='us-east-1'
         )
         
-        table = dynamodb.Table('Appointments')
+        table = dynamodb.Table('appointments')
         
         response = table.update_item(
             Key={
-                'appointment_id': id
+                'appointment_id': str(id)
             },
             UpdateExpression="set paid = :p",
             ExpressionAttributeValues={
@@ -201,31 +200,44 @@ def finishAppointment(request, id):
             return Response({'detail': 'Could not close appointment', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+from boto3.dynamodb.conditions import Key
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def waitingRoom(request):
     try:
         apps = Appointment.objects.filter(arrived=True)
-        
+
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+        table = dynamodb.Table('Appointments')
+
         appointment_data = []
         for appointment in apps:
             user_username = appointment.user.username if appointment.user else None
-            appointment_data.append({
-                'id': appointment.id,
-                'user_username': user_username,
-                'date': appointment.date,
-                'hour': appointment.hour,
-                'speciality': appointment.speciality,
-                'doctor': appointment.doctor,
-                'paid': appointment.paid,
-                'room': appointment.room,
-                'est_time': appointment.est_time
-            })
+            
+            response = table.get_item(
+                Key={'appointment_id': appointment.id}
+            )
+            paid_status = response.get('Item', {}).get('paid', False)
+            
+            if paid_status:
+                appointment_data.append({
+                    'id': appointment.id,
+                    'user_username': user_username,
+                    'date': appointment.date,
+                    'hour': appointment.hour,
+                    'speciality': appointment.speciality,
+                    'doctor': appointment.doctor,
+                    'paid': paid_status,
+                    'room': appointment.room,
+                    'est_time': appointment.est_time
+                })
 
         return Response({'appointments': appointment_data}, status=status.HTTP_200_OK)
         
     except Exception as e:
         return Response({'detail': 'Could not fetch appointments', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @api_view(['GET'])
 def getDoctorsBySpecialty(request, specialty):
