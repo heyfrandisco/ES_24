@@ -3,6 +3,7 @@ import React from 'react'
 import Webcam from 'react-webcam';
 import './webCamCapture.css'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 
 function WebcamCapture() {
@@ -16,6 +17,20 @@ function WebcamCapture() {
       console.log("Image Taken: ", imageSrc)
 
       //send the image to the backend to be recognized
+      axios.post('http://localhost:8000/recognition', {
+        img: imageSrc
+      },
+      {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token') 
+      }
+      }
+      ).then((response) => {
+        console.log(response);
+      }).catch((error) => {
+        console.log(error);
+      });
+
         
       //after response (response should contain the patient info and the appointment info)
       //navigate to Dashboard page

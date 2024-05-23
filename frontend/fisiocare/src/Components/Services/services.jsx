@@ -12,7 +12,7 @@ function Services() {
 
   useEffect(() => {
     //get the specialities from the backend
-    axios.get(process.env.BACKEND_API_URL + '/specialities/', {
+    axios.get('http://localhost:8000/specialities/', {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }

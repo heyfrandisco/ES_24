@@ -15,7 +15,7 @@ export default function Profile() {
     
     useEffect(() => {
         //send request to backend to get user info and appointments
-        axios.get(process.env.BACKEND_API_URL + '/profile', {
+        axios.get('http://localhost:8000/profile', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token')
             }

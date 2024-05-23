@@ -26,10 +26,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 # --- AWS VARIABLES ---
-aws_access_key_id = 'ASIA5JCMZJ3F6BMH2ZMR'
-aws_secret_access_key = 'vvJGZVQgWJIfT6/4/VDusjzXJjcDGEt2GdlT0OLT'
-aws_session_token = 'IQoJb3JpZ2luX2VjENP//////////wEaCXVzLXdlc3QtMiJGMEQCIGKKNcHACc18mh/qO1D5IvitQPZjpH+qiaGeGDU0Iyv5AiBsfnYQwlAP4S6GU47qNZoQ8IT/Lem++IVvqMNxYUcsLCq0AghMEAIaDDkxMjg0MTU5MjUyMyIMoVnps+s8BCzvC9mzKpECIK1S0Nl5YZEeHP5T8Jxe79RAM8FtWTwMXfqzzhTHgLtzUjwuU5zFPIujWed0Idw9BuPPptHe/5AgyfYLrCW35qWgEPTc8vZ28+lfx/ItbTcKOUxxUDGuo9Y1CW+kxhDyPUsxX1NnWOEvCpH1MWI+ZRKGwpJujXrgff3iHf7iH962vW2AcST2umq+f1ifEGN8KfgxybeOUefv/nS/05OgMVxlMor22eaPJKnVfg6E4++E23jf6vb+Xj5bXLUUaPV8v/bbSm/abvp/umN0TPnj7oaLHqnjihLX3qhWhH2aC/2Fv4a5jrXMouZelmsmyBv4qmr54x4O4DFgDvzaQwiMmc6MenllVihtf/3IDvJMW66VMInhs7IGOp4BVK4uJYgbqsEUkHplc6sCabu6N5sAdGh+vS2sPRW6wEeiQvZxuliBc1K/FIxhi4mXVFg/bMqcrjHogRd1wxEHHPfCWnfYJqaHZmEw2VZgb4UC8BxxF6qB0bCJOrP/B7mvTd/unqedM2pox2lEHk274vgoBBRwYDPYoxoDcCcAwgftU5W3/1kdKAmtaDP/i+2a3tUxRfjtbnlbTwM5/cY='
-
+aws_access_key_id='ASIA5JCMZJ3F2IIFLGI5'
+aws_secret_access_key='hnaQrUKoPv05QLg+MDPkprjqLhjn8+eYV0etloVI'
+aws_session_token='IQoJb3JpZ2luX2VjEPP//////////wEaCXVzLXdlc3QtMiJHMEUCIQD8mxJ2wjnUfDrXwAkDSCVc1/VyLoogEic4tcotjReK6gIgJiLrBBn/oVFtz905wC/oxIuIjO7Kt6ldoTwgpFkquQMqtAIIbBACGgw5MTI4NDE1OTI1MjMiDIsExJHJNUVnx/+MwyqRAmJ8akBh3XU4CbJhcDS4iW8bEjatbUOvXO5Qv3ysSMR3noiIs5aVelZkgImJztgOP+DxSfOpg+aeXG2fq5LN0F9xWG0ZWUMKXqrmMHDklVezH64G64dbVQcrhOYQZRdU6Pd8/ZBteo8AzmU03Uwlsq3vBnEklKmN8e1DIVPxVqhFUEDPnm82wRMG8gWOcPJaqSznwsifh0L1zMKL6sOmHdM3784M2IizJ6c+KeloQXKbkzGCqxO9ctb2JHT1pG52+ypDfppIoBZHg/lAvBiPmjj0XLH5kXELYEMoQxpLNBCVSicy6HGfoFrsqEXjsOB6vCbN4tLNFQSGnovzJb554FTXt40xAR37cMa7DFc2l0kKcDCW1LqyBjqdAV8YqCdDXg8SyZBUdtjq/wNgQ67bfTUxUAUyeoMM9MY0ghO7gKU8nxR7x4yHPYmbp5OPNGMB+HJvNXrK+TpiFUCtwWXfhICLTiprr7NuxnKl+43OIGQfFCPBGav9sLWaKnhLT7dOMH9Ulrp1LeU6gM11tHM8ZaGCH7f/9HsUYxodoi1XlmtEOhVoqzWnoRFLZcplziP5VFECXXomT1c='
 bucket_name = ''
 # ----------------
 
@@ -90,7 +89,7 @@ def createAppointment(request):
 
     serializer = AppointmentSerializer(data=appointment_data, context={'request': request})
     if serializer.is_valid():
-        serializer.save()
+        appointment_instance = serializer.save()
 
         dynamodb = boto3.resource(
             'dynamodb', 
@@ -100,11 +99,13 @@ def createAppointment(request):
             region_name='us-east-1'
         )
         
-        table = dynamodb.Table('appointments')
+        table = dynamodb.Table('Appointments')
+
+        print(serializer.data)
 
         dynamodb_response = table.put_item(
             Item={
-                'appointment_id': appointment.id,
+                'appointment_id': appointment_instance.id,
                 'paid': False
             }
         )
@@ -128,6 +129,7 @@ def getSpecialties(request):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def payment(request, id):
     try:
         app = Appointment.objects.get(id=id)
@@ -159,17 +161,30 @@ def finishAppointment(request, id):
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def waitingRoom(request):
     try:
         apps = Appointment.objects.filter(arrived=True)
         
-        serializer = AppointmentSerializer(apps, many=True)
-        
-        return Response({'appointments': serializer.data}, status=status.HTTP_200_OK)
+        appointment_data = []
+        for appointment in apps:
+            user_username = appointment.user.username if appointment.user else None
+            appointment_data.append({
+                'id': appointment.id,
+                'user_username': user_username,
+                'date': appointment.date,
+                'hour': appointment.hour,
+                'speciality': appointment.speciality,
+                'doctor': appointment.doctor,
+                'paid': appointment.paid,
+                'room': appointment.room,
+                'est_time': appointment.est_time
+            })
+
+        return Response({'appointments': appointment_data}, status=status.HTTP_200_OK)
         
     except Exception as e:
-            return Response({'detail': 'Could not fetch appointments', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        return Response({'detail': 'Could not fetch appointments', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['GET'])
 def getDoctorsBySpecialty(request, specialty):
@@ -222,7 +237,7 @@ def faceRecognition(request):
 
     bucket = s3.Bucket(bucket_name)
 
-    target = request.POST['image'].split(',')[1]
+    target = request.data.get('img')
 
     authorized = False
 

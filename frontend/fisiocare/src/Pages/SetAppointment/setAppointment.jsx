@@ -15,13 +15,13 @@ export default function SetAppointment() {
     const [app, setApp] = useState({});
     const [appointment, setAppointment] = useState({
         date: '',
-        time: '',
+        hour: '',
         speciality: '',
         doctor: ''
     });
 
     useEffect(() => {
-        axios.get(process.env.BACKEND_API_URL + '/specialities/', {
+        axios.get('http://localhost:8000/specialities/', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -38,7 +38,7 @@ export default function SetAppointment() {
 
     //send request to backend to get doctors for the selected speciality
     useEffect(() => {
-        axios.get(process.env.BACKEND_API_URL + `/doctors/${appointment.speciality}`, {
+        axios.get(`http://localhost:8000/doctors/${appointment.speciality}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -73,7 +73,7 @@ export default function SetAppointment() {
 
 
         // request para o backend
-        axios.post(process.env.BACKEND_API_URL + '/set-appointment', appointment,{
+        axios.post('http://localhost:8000/set-appointment', appointment,{
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
@@ -111,7 +111,7 @@ export default function SetAppointment() {
                     </div>
                     <div className='appointment-card-input'>
                         <p>Hora</p>
-                        <input type='time' value={appointment.time} onChange={(e) => setAppointment({ ...appointment, time: e.target.value })} placeholder='Hora'/>
+                        <input type='time' value={appointment.hour} onChange={(e) => setAppointment({ ...appointment, hour: e.target.value })} placeholder='Hora'/>
                     </div>
                     <div className='appointment-card-input'>
                         <p>Especialidade</p>

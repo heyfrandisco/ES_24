@@ -35,10 +35,10 @@
 }
 
 .homepage-services-cards{
-    padding-left: 5%;
+    padding-left: 15%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-gap: 20px;
+    grid-row-gap: 6em;
     justify-content: center;
     align-items: center;
     width: 100%;

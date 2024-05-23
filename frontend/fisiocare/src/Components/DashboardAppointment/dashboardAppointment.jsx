@@ -6,15 +6,15 @@ function DashboardAppointment({appointment}) {
     <>
       <div className='dasboard-appointment-card'>
         <div className='dashboard-appointment-patient-info'>
-          <p>Guilherme Faria</p>
+          <p>{appointment.user_username}</p>
         </div>
         <div className='dashboard-appointment-info'>
-          <p>Hora: 16:00</p>
-          <p>Tempo de espera estimado: 20 min</p>
+          <p>Hora: {appointment.hour}</p>
+          <p>Tempo de espera estimado: {appointment.est_time} min</p>
         </div>
         <div className='dashboard-appointment-office-info'>
           <p>Consultório:</p>
-          <p>3</p>
+          <p>{appointment.room}</p>
         </div>
       </div>
     </>

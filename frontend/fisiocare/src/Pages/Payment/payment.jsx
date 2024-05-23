@@ -39,9 +39,9 @@ export default function Payment() {
             //console.log(appointment);
 
             //post to backend with appointment id and the token
-            axios.post(process.env.BACKEND_API_URL + `/payment/${appointment.id}`,{
+            axios.post(`http://localhost:8000/payment/${appointment.id}`,{
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
                 }
             })
             .then((response) => {
