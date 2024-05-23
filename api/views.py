@@ -96,7 +96,6 @@ def createAppointment(request):
             region_name='us-east-1'
         )
         
-        # TODO create table on dynamo
         table = dynamodb.Table('appointments')
 
         dynamodb_response = table.put_item(
