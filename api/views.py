@@ -124,6 +124,50 @@ def getSpecialties(request):
     return Response({"Specialties":specialties})
 
 
+@api_view(['POST'])
+def payment(request, id):
+    try:
+        app = Appointment.objects.get(id=id)
+        
+        app.paid = True
+        app.state = "Scheduled"
+        app.save()
+        
+        return Response({"Appointment Paid"}, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+            return Response({'detail': 'Could not pay appointment', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def finishAppointment(request, id):
+    try:
+        app = Appointment.objects.get(id=id)
+        
+        app.arrived = False
+        app.finished = True
+        app.state = "Finished"
+        app.save()
+        
+        return Response({"Appointment Closed"}, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+            return Response({'detail': 'Could not close appointment', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+def waitingRoom(request):
+    try:
+        apps = Appointment.objects.filter(arrived=True)
+        
+        serializer = AppointmentSerializer(apps, many=True)
+        
+        return Response({'appointments': serializer.data}, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+            return Response({'detail': 'Could not fetch appointments', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 @api_view(['GET'])
 def getDoctorsBySpecialty(request, specialty):
     doctors = Doctor.objects.filter(speciality=specialty)
@@ -132,7 +176,30 @@ def getDoctorsBySpecialty(request, specialty):
     return Response({"doctors":serializer.data})
 
 
+@api_view(['GET'])
+def getProfile(request):
+    user = request.user
+
+    try:
+        user = User.objects.get(id=user.id)
+    except User.DoesNotExist:
+        return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    user_serializer = UserSerializer(user)
+
+    appointments = Appointment.objects.filter(user_id=user.id)
+
+    appointment_serializer = AppointmentSerializer(appointments, many=True)
+
+    return Response({
+        "user": user_serializer.data,
+        "appointments": appointment_serializer.data
+    }, status=status.HTTP_200_OK)
+
+
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def faceRecognition(request):
     rekognition = boto3.client(
         'rekognition',
@@ -154,24 +221,40 @@ def faceRecognition(request):
 
     target = request.POST['image'].split(',')[1]
 
-    x = bool()
+    authorized = False
 
-    for i in buckes.objects.all():
+    for i in bucket.objects.all():
         path, filename = os.path.split(i.key)
         img = bucket.Object(filename)
         
         resp = rekognition.compare_faces(
-                                            SimilarityThreshold=75,
-                                            SourceImage={'Bytes': img.get()['Body'].read()},
-                                            TargetImage={'Bytes': base64.b64decode(target)}
-                                        )
+            SimilarityThreshold=75,
+            SourceImage={'Bytes': img.get()['Body'].read()},
+            TargetImage={'Bytes': base64.b64decode(target)}
+        )
         
         for match in resp['FaceMatches']:
-            pos = match['Face']['BoundingBox']
-            similarity = str(match['Similarity'])
-            x = True
+            authorized = True
+            break
+        
+        if authorized:
+            break
             
-        if(len(x) == 0):
-            x = False
+    if authorized:
+        try:
+            user = request.user
+            now = timezone.now()
+
+            closest_appointment = Appointment.objects.filter(user=user, date__gte=now.date()).order_by('date', 'hour').first()
             
-        return Response({'AUTH': x})
+            if closest_appointment:
+                closest_appointment.arrived = True
+                closest_appointment.save()
+                
+                return Response({'AUTH': True, 'message': 'Arrival marked successfully.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'AUTH': False, 'error': 'No upcoming appointments found.'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'AUTH': False, 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return Response({'AUTH': False, 'error': 'Face not recognized.'}, status=status.HTTP_401_UNAUTHORIZED)

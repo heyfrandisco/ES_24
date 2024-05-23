@@ -28,6 +28,9 @@ class Appointment(models.Model):
     paid = models.BooleanField(default=False)
     room = models.IntegerField(default=1)
     est_time = models.IntegerField(default=10)
+    finished = models.BooleanField(default=False)
+    arrived = models.BooleanField(default=False)
+    state = models.CharField(max_length=200, default="waiting for payment") # wfp, scheduled, finished
 
     def __init__(self, *args, **kwargs):
         if 'room' not in kwargs:
