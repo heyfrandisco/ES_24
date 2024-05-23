@@ -1,0 +1,5 @@
+criar appointment
+    passar id da appointment
+    step -> verificar intervalo de tempo (1min) 
+
+    lambda -> ver se 

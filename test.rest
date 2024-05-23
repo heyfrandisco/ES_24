@@ -40,8 +40,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiY
 {
     "date": "2024-05-20",
     "hour": "14:30",
-    "speciality": "Sports",
-    "doctor": "Lando"
+    "speciality": "Fisioterapia Respiratória",
+    "doctor": "João Pratas "
 }
 
 ###
