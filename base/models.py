@@ -26,8 +26,11 @@ class Appointment(models.Model):
     speciality = models.CharField(max_length=200)
     doctor = models.CharField(max_length=200)
     paid = models.BooleanField(default=False)
-    room = models.IntegerField(default=lambda: random.randint(1, 5))
-    est_time = models.IntegerField(default=lambda: random.randint(10, 60))
+    room = models.IntegerField(default=1)
+    est_time = models.IntegerField(default=10)
+    finished = models.BooleanField(default=False)
+    arrived = models.BooleanField(default=False)
+    state = models.CharField(max_length=200, default="waiting for payment") # wfp, scheduled, finished
 
     def __str__(self):
         return f"{self.user} - {self.date} at {self.hour}"

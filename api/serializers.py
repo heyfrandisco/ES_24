@@ -32,7 +32,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['id', 'user', 'date', 'hour', 'speciality', 'doctor', 'paid', 'room', 'est_time']
+        fields = ['id', 'user', 'date', 'hour', 'speciality', 'doctor', 'paid', 'room', 'est_time', 'finished', 'arrived', 'state']
         read_only_fields = ['user', 'room', 'est_time']
 
     def create(self, validated_data):
