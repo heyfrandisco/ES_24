@@ -32,4 +32,15 @@ class DoctorSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['id', 'user', 'doctor', 'date', 'hour', 'speciality', 'paid', 'room', 'est_time']
+        fields = ['id', 'user', 'date', 'hour', 'speciality', 'doctor', 'paid', 'room', 'est_time', 'finished', 'arrived', 'state']
+        read_only_fields = ['user', 'room', 'est_time']
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        user = request.user if request else None
+        validated_data['user'] = user
+        if 'room' not in validated_data:
+            validated_data['room'] = random.randint(1, 5)
+        if 'est_time' not in validated_data:
+            validated_data['est_time'] = random.randint(10, 60)
+        return super().create(validated_data)
